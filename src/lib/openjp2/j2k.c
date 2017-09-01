@@ -42,6 +42,7 @@
  */
 
 #include "opj_includes.h"
+#include <errno.h>
 
 /** @defgroup J2K J2K - JPEG-2000 codestream reader/writer */
 /*@{*/
@@ -12394,6 +12395,7 @@ OPJ_BOOL opj_j2k_start_compress(opj_j2k_t *p_j2k,
     p_j2k->m_private_image = opj_image_create0();
     if (! p_j2k->m_private_image) {
         opj_event_msg(p_manager, EVT_ERROR, "Failed to allocate image header.");
+                errno = 0x61500;
         return OPJ_FALSE;
     }
     opj_copy_image_header(p_image, p_j2k->m_private_image);
@@ -12412,21 +12414,25 @@ OPJ_BOOL opj_j2k_start_compress(opj_j2k_t *p_j2k,
 
     /* customization of the validation */
     if (! opj_j2k_setup_encoding_validation(p_j2k, p_manager)) {
+                errno = 0x61501;
         return OPJ_FALSE;
     }
 
     /* validation of the parameters codec */
     if (! opj_j2k_exec(p_j2k, p_j2k->m_validation_list, p_stream, p_manager)) {
+                errno = 0x61502;
         return OPJ_FALSE;
     }
 
     /* customization of the encoding */
     if (! opj_j2k_setup_header_writing(p_j2k, p_manager)) {
+                errno = 0x61503;
         return OPJ_FALSE;
     }
 
     /* write header */
     if (! opj_j2k_exec(p_j2k, p_j2k->m_procedure_list, p_stream, p_manager)) {
+                errno = 0x61504;
         return OPJ_FALSE;
     }
 
