@@ -570,6 +570,8 @@ OPJ_BOOL opj_tcd_rateallocate(opj_tcd_t *tcd,
                                 OPJ_UINT32) ceil(tcd_tcp->rates[layno])), len) : len;
         OPJ_FLOAT64 goodthresh = 0;
         OPJ_FLOAT64 stable_thresh = 0;
+		OPJ_FLOAT64 old_thresh = -1;
+		const OPJ_FLOAT64 tolerance = 0.001;
         OPJ_UINT32 i;
         OPJ_FLOAT64 distotarget;
 
@@ -613,6 +615,9 @@ OPJ_BOOL opj_tcd_rateallocate(opj_tcd_t *tcd,
 #endif
 
                 layer_allocation_is_same = opj_tcd_makelayer(tcd, layno, thresh, 0) && i != 0;
+				if ((fabs(old_thresh - thresh)) < tolerance)
+					break;
+				old_thresh = thresh;
 #ifdef DEBUG_RATE_ALLOC
                 opj_event_msg(p_manager, EVT_INFO, "--> layer_allocation_is_same = %d",
                               layer_allocation_is_same);
