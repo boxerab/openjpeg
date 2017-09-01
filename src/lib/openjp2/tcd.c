@@ -539,6 +539,8 @@ OPJ_BOOL opj_tcd_rateallocate(opj_tcd_t *tcd,
                                 OPJ_UINT32) ceil(tcd_tcp->rates[layno])), len) : len;
         OPJ_FLOAT64 goodthresh = 0;
         OPJ_FLOAT64 stable_thresh = 0;
+		OPJ_FLOAT64 old_thresh = -1;
+		const OPJ_FLOAT64 tolerance = 0.01;
         OPJ_UINT32 i;
         OPJ_FLOAT64 distotarget;                /* fixed_quality */
 
@@ -567,6 +569,9 @@ OPJ_BOOL opj_tcd_rateallocate(opj_tcd_t *tcd,
                 thresh = (lo + hi) / 2;
 
                 opj_tcd_makelayer(tcd, layno, thresh, 0);
+				if ((fabs(old_thresh - thresh)) < tolerance)
+					break;
+				old_thresh = thresh;
 
                 if (cp->m_specific_param.m_enc.m_fixed_quality) {       /* fixed_quality */
                     if (OPJ_IS_CINEMA(cp->rsiz)) {
