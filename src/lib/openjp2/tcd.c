@@ -540,7 +540,7 @@ OPJ_BOOL opj_tcd_rateallocate(opj_tcd_t *tcd,
         OPJ_FLOAT64 goodthresh = 0;
         OPJ_FLOAT64 stable_thresh = 0;
 		OPJ_FLOAT64 old_thresh = -1;
-		const OPJ_FLOAT64 tolerance = 0.01;
+		const OPJ_FLOAT64 tolerance = 0.001;
         OPJ_UINT32 i;
         OPJ_FLOAT64 distotarget;                /* fixed_quality */
 
