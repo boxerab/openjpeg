@@ -5,15 +5,13 @@ def build(target, options):
     if target.platform == 'windows':
         # Hack: the build fails if PATH includes /opt/windows/64/bin; I don't know why:
         # remove it
-        target.set('PATH', '%s:%s' % (target.mingw_path, os.environ['PATH']))
+        target.set('PATH', '%s:%s' % (target.tool_path, os.environ['PATH']))
         f = open('mingw.cmake', 'w')
         print("SET(CMAKE_SYSTEM_NAME Windows)", file=f)
-        print("SET(CMAKE_C_COMPILER %s/%s)" % (target.mingw_path, target.get('CC')), file=f)
-        print("SET(CMAKE_RC_COMPILER %s/%s)" % (target.mingw_path, target.get('WINRC')), file=f)
-        all = ""
-        for p in target.mingw_prefixes:
-            all += "%s " % p
-        print("SET(CMAKE_ROOT_FIND_PATH %s %s)" % (all, target.mingw_path), file=f)
+        print("SET(CMAKE_C_COMPILER %s/%s)" % (target.tool_path, target.get('CC')), file=f)
+        print("SET(CMAKE_RC_COMPILER %s/%s)" % (target.tool_path, target.get('WINRC')), file=f)
+        all = "%s " % target.library_prefix
+        print("SET(CMAKE_ROOT_FIND_PATH %s %s)" % (all, target.tool_path), file=f)
         print("SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)", file=f)
         print("SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)", file=f)
         print("SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)", file=f)
