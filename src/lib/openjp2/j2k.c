@@ -1903,6 +1903,7 @@ static OPJ_BOOL opj_j2k_write_soc(opj_j2k_t *p_j2k,
     opj_write_bytes(l_start_stream, J2K_MS_SOC, 2);
 
     if (opj_stream_write_data(p_stream, l_start_stream, 2, p_manager) != 2) {
+	    errno = 0x61515;
         return OPJ_FALSE;
     }
 
@@ -2059,6 +2060,7 @@ static OPJ_BOOL opj_j2k_write_siz(opj_j2k_t *p_j2k,
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, l_size_len,
                               p_manager) != l_size_len) {
+	    errno = 0x61516;
         return OPJ_FALSE;
     }
 
@@ -2522,6 +2524,7 @@ static OPJ_BOOL opj_j2k_write_com(opj_j2k_t *p_j2k,
             p_j2k->m_specific_param.m_encoder.m_header_tile_data_size = 0;
             opj_event_msg(p_manager, EVT_ERROR,
                           "Not enough memory to write the COM marker\n");
+	    errno = 0x61524;
             return OPJ_FALSE;
         }
         p_j2k->m_specific_param.m_encoder.m_header_tile_data = new_header_tile_data;
@@ -2545,6 +2548,7 @@ static OPJ_BOOL opj_j2k_write_com(opj_j2k_t *p_j2k,
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, l_total_com_size,
                               p_manager) != l_total_com_size) {
+	    errno = 0x61525;
         return OPJ_FALSE;
     }
 
@@ -2636,17 +2640,20 @@ static OPJ_BOOL opj_j2k_write_cod(opj_j2k_t *p_j2k,
     if (! opj_j2k_write_SPCod_SPCoc(p_j2k, p_j2k->m_current_tile_number, 0,
                                     l_current_data, &l_remaining_size, p_manager)) {
         opj_event_msg(p_manager, EVT_ERROR, "Error writing COD marker\n");
+	errno = 0x61517;
         return OPJ_FALSE;
     }
 
     if (l_remaining_size != 0) {
         opj_event_msg(p_manager, EVT_ERROR, "Error writing COD marker\n");
+	errno = 0x61518;
         return OPJ_FALSE;
     }
 
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, l_code_size,
                               p_manager) != l_code_size) {
+	    errno = 0x61519;
         return OPJ_FALSE;
     }
 
@@ -3040,17 +3047,20 @@ static OPJ_BOOL opj_j2k_write_qcd(opj_j2k_t *p_j2k,
     if (! opj_j2k_write_SQcd_SQcc(p_j2k, p_j2k->m_current_tile_number, 0,
                                   l_current_data, &l_remaining_size, p_manager)) {
         opj_event_msg(p_manager, EVT_ERROR, "Error writing QCD marker\n");
+	errno = 0x6151a;
         return OPJ_FALSE;
     }
 
     if (l_remaining_size != 0) {
         opj_event_msg(p_manager, EVT_ERROR, "Error writing QCD marker\n");
+	errno = 0x6151b;
         return OPJ_FALSE;
     }
 
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, l_qcd_size,
                               p_manager) != l_qcd_size) {
+	    errno = 0x6151c;
         return OPJ_FALSE;
     }
 
@@ -3322,6 +3332,7 @@ static OPJ_BOOL opj_j2k_write_poc(opj_j2k_t *p_j2k,
             p_j2k->m_specific_param.m_encoder.m_header_tile_data = NULL;
             p_j2k->m_specific_param.m_encoder.m_header_tile_data_size = 0;
             opj_event_msg(p_manager, EVT_ERROR, "Not enough memory to write POC marker\n");
+	    errno = 0x61521;
             return OPJ_FALSE;
         }
         p_j2k->m_specific_param.m_encoder.m_header_tile_data = new_header_tile_data;
@@ -3335,6 +3346,7 @@ static OPJ_BOOL opj_j2k_write_poc(opj_j2k_t *p_j2k,
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, l_poc_size,
                               p_manager) != l_poc_size) {
+	    errno = 0x61522;
         return OPJ_FALSE;
     }
 
@@ -4241,6 +4253,7 @@ static OPJ_BOOL opj_j2k_write_tlm(opj_j2k_t *p_j2k,
             p_j2k->m_specific_param.m_encoder.m_header_tile_data = NULL;
             p_j2k->m_specific_param.m_encoder.m_header_tile_data_size = 0;
             opj_event_msg(p_manager, EVT_ERROR, "Not enough memory to write TLM marker\n");
+	    errno = 0x6151f;
             return OPJ_FALSE;
         }
         p_j2k->m_specific_param.m_encoder.m_header_tile_data = new_header_tile_data;
@@ -4277,6 +4290,7 @@ static OPJ_BOOL opj_j2k_write_tlm(opj_j2k_t *p_j2k,
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, l_tlm_size,
                               p_manager) != l_tlm_size) {
+	    errno = 0x61520;
         return OPJ_FALSE;
     }
 
@@ -5155,10 +5169,12 @@ static OPJ_BOOL opj_j2k_write_eoc(opj_j2k_t *p_j2k,
 
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_header_tile_data, 2, p_manager) != 2) {
+	    errno = 0x61510;
         return OPJ_FALSE;
     }
 
     if (! opj_stream_flush(p_stream, p_manager)) {
+	    errno = 0x61511;
         return OPJ_FALSE;
     }
 
@@ -5415,6 +5431,7 @@ static OPJ_BOOL opj_j2k_update_rates(opj_j2k_t *p_j2k,
         opj_event_msg(p_manager, EVT_ERROR,
                       "Not enough memory to allocate m_encoded_tile_data. %u MB required\n",
                       (OPJ_UINT32)(l_tile_size / 1024 / 1024));
+	    errno = 0x6152c;
         return OPJ_FALSE;
     }
 
@@ -5423,6 +5440,7 @@ static OPJ_BOOL opj_j2k_update_rates(opj_j2k_t *p_j2k,
             (OPJ_BYTE *) opj_malloc(6 *
                                     p_j2k->m_specific_param.m_encoder.m_total_tile_parts);
         if (! p_j2k->m_specific_param.m_encoder.m_tlm_sot_offsets_buffer) {
+		errno = 0x6152d;
             return OPJ_FALSE;
         }
 
@@ -5516,6 +5534,7 @@ static OPJ_BOOL opj_j2k_write_mct_data_group(opj_j2k_t *p_j2k,
     assert(p_manager != 00);
 
     if (! opj_j2k_write_cbd(p_j2k, p_stream, p_manager)) {
+	    errno = 0x61526;
         return OPJ_FALSE;
     }
 
@@ -5525,6 +5544,7 @@ static OPJ_BOOL opj_j2k_write_mct_data_group(opj_j2k_t *p_j2k,
     for (i = 0; i < l_tcp->m_nb_mct_records; ++i) {
 
         if (! opj_j2k_write_mct_record(p_j2k, l_mct_record, p_stream, p_manager)) {
+	    errno = 0x61527;
             return OPJ_FALSE;
         }
 
@@ -5536,6 +5556,7 @@ static OPJ_BOOL opj_j2k_write_mct_data_group(opj_j2k_t *p_j2k,
     for (i = 0; i < l_tcp->m_nb_mcc_records; ++i) {
 
         if (! opj_j2k_write_mcc_record(p_j2k, l_mcc_record, p_stream, p_manager)) {
+	    errno = 0x61528;
             return OPJ_FALSE;
         }
 
@@ -5543,6 +5564,7 @@ static OPJ_BOOL opj_j2k_write_mct_data_group(opj_j2k_t *p_j2k,
     }
 
     if (! opj_j2k_write_mco(p_j2k, p_stream, p_manager)) {
+	    errno = 0x61529;
         return OPJ_FALSE;
     }
 
@@ -5565,6 +5587,7 @@ static OPJ_BOOL opj_j2k_write_all_coc(
         /* cod is first component of first tile */
         if (! opj_j2k_compare_coc(p_j2k, 0, compno)) {
             if (! opj_j2k_write_coc(p_j2k, compno, p_stream, p_manager)) {
+		    errno = 0x6151d;
                 return OPJ_FALSE;
             }
         }
@@ -5589,6 +5612,7 @@ static OPJ_BOOL opj_j2k_write_all_qcc(
         /* qcd is first component of first tile */
         if (! opj_j2k_compare_qcc(p_j2k, 0, compno)) {
             if (! opj_j2k_write_qcc(p_j2k, compno, p_stream, p_manager)) {
+		    errno = 0x6151e;
                 return OPJ_FALSE;
             }
         }
@@ -5615,6 +5639,7 @@ static OPJ_BOOL opj_j2k_write_regions(opj_j2k_t *p_j2k,
 
             if (! opj_j2k_write_rgn(p_j2k, 0, compno, p_j2k->m_private_image->numcomps,
                                     p_stream, p_manager)) {
+		    errno = 0x61523;
                 return OPJ_FALSE;
             }
         }
@@ -12432,7 +12457,6 @@ OPJ_BOOL opj_j2k_start_compress(opj_j2k_t *p_j2k,
 
     /* write header */
     if (! opj_j2k_exec(p_j2k, p_j2k->m_procedure_list, p_stream, p_manager)) {
-                errno = 0x61504;
         return OPJ_FALSE;
     }
 
@@ -13013,16 +13037,19 @@ static OPJ_BOOL opj_j2k_write_updated_tlm(opj_j2k_t *p_j2k,
     l_current_position = opj_stream_tell(p_stream);
 
     if (! opj_stream_seek(p_stream, l_tlm_position, p_manager)) {
+	    errno = 0x61512;
         return OPJ_FALSE;
     }
 
     if (opj_stream_write_data(p_stream,
                               p_j2k->m_specific_param.m_encoder.m_tlm_sot_offsets_buffer, l_tlm_size,
                               p_manager) != l_tlm_size) {
+	    errno = 0x61513;
         return OPJ_FALSE;
     }
 
     if (! opj_stream_seek(p_stream, l_current_position, p_manager)) {
+	    errno = 0x61514;
         return OPJ_FALSE;
     }
 
@@ -13167,6 +13194,7 @@ static OPJ_BOOL opj_j2k_create_tcd(opj_j2k_t *p_j2k,
 
     if (! p_j2k->m_tcd) {
         opj_event_msg(p_manager, EVT_ERROR, "Not enough memory to create Tile Coder\n");
+	errno = 0x6152a;
         return OPJ_FALSE;
     }
 
@@ -13174,6 +13202,7 @@ static OPJ_BOOL opj_j2k_create_tcd(opj_j2k_t *p_j2k,
                       p_j2k->m_tp)) {
         opj_tcd_destroy(p_j2k->m_tcd);
         p_j2k->m_tcd = 00;
+	errno = 0x6152b;
         return OPJ_FALSE;
     }
 
