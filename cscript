@@ -8,7 +8,12 @@ def build(target, options):
         target.set('PATH', '%s:%s' % (target.tool_path, os.environ['PATH']))
         f = open('mingw.cmake', 'w')
         print("SET(CMAKE_SYSTEM_NAME Windows)", file=f)
-        print("SET(CMAKE_C_COMPILER %s/%s)" % (target.tool_path, target.get('CC')), file=f)
+        cc = target.get('CC')
+        cc = cc.replace("ccache ", "")
+        cc = cc.replace("\"", "")
+        if target.ccache:
+            print("set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)", file=f)
+        print("SET(CMAKE_C_COMPILER %s/%s)" % (target.tool_path, cc), file=f)
         print("SET(CMAKE_RC_COMPILER %s/%s)" % (target.tool_path, target.get('WINRC')), file=f)
         all = "%s " % target.library_prefix
         print("SET(CMAKE_ROOT_FIND_PATH %s %s)" % (all, target.tool_path), file=f)
