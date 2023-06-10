@@ -170,6 +170,9 @@ endif()
 
 #-----------------------------------------------------------------------------
 # Compiler specific flags:
+
+set(CMAKE_POSITION_INDEPENDENT_CODE, ON)
+
 if(CMAKE_COMPILER_IS_GNUCC)
   # For all builds, make sure openjpeg is std99 compliant:
   # set(CMAKE_C_FLAGS "-Wall -std=c99 ${CMAKE_C_FLAGS}") # FIXME: this setting prevented us from setting a coverage build.
